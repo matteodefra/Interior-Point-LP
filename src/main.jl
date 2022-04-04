@@ -1,5 +1,6 @@
 using LinearAlgebra
 using DelimitedFiles
+using Printf
 
 include("barrier.jl")
 include("primal_dual.jl")
@@ -36,9 +37,9 @@ for (n, m) in zip(ns, ms)
 
     α = 0.9995
 
-    max_iter = 100
+    max_iter = 500
 
-    ϵ = 1e-8
+    ε = 1e-8
 
     𝑶 = zeros((m,m))
 
@@ -48,8 +49,8 @@ for (n, m) in zip(ns, ms)
 
     𝑶3 = zeros((n,n))
 
-    # primal_dual(n, m, e, iden, c, b, A, x, y, s, σ, μ, α, max_iter, ϵ, 𝑶, 𝑶2, 𝑶3)
+    primal_dual(n, m, e, iden, c, b, A, x, y, s, σ, μ, α, max_iter, ε, 𝑶, 𝑶2, 𝑶3)
 
-    barrier(n, m, e, iden, c, b, A, x, y, s, σ, μ, α, max_iter, ϵ, 𝑶, 𝒐)
+    # barrier(n, m, e, c, b, A, x, σ, μ, α, max_iter, ε, 𝑶, 𝒐)
 
 end
