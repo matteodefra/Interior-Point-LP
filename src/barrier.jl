@@ -1,9 +1,18 @@
 using LinearAlgebra
+using Printf
 
 
-function barrier(n, m, e, iden, c, b, A, x, y, s, σ, μ, α, max_iter, ϵ, 𝑶, 𝒐)
+function barrier(n, m, e, c, b, A, x, σ, μ, α, max_iter, ε, 𝑶, 𝒐)
 
-    for i=1:1:max_iter
+    print("Newton Method with Logarithmic Barrier method")
+
+    print("n = $(n), m = $(m)")
+
+    print("iter\t\ttime\t\tf(x)-ϕ(y)\t\t∥Ax-b∥\t\t∥Ay+s-c∥\t\t∥g∥\n\n")
+
+    for iteration=1:1:max_iter
+
+        start = time()
 
         X = diagm(vec(x.^(-1)))
 
@@ -23,18 +32,28 @@ function barrier(n, m, e, iden, c, b, A, x, y, s, σ, μ, α, max_iter, ϵ, 𝑶
 
         s = c - A' * y
 
-
         # Compute gaps
-        gap1 = c' * x - b' * y 
+        gap = c' * x - b' * y 
 
-        gap2 = x' * s 
+        least_squares = norm(A * x - b)
 
-        display(gap2)
+        s_norm = norm(A' * y + s - c)
 
+        finish = time()
+
+        time_step = finish - start
+
+        @printf "%d\t\t%.8f \t%1.5e \t%1.5e \t%1.5e \t%1.5e \n" iteration time_step gap[1] least_squares s_norm norm(Δ)
+
+        if max(gap[1], s_norm, least_squares) ≤ ε
+            print("Stopping conditions satisfied!")
+        end
 
         # Update barrier
         μ = σ * μ
 
     end
+
+    print("\n\n")
 
 end

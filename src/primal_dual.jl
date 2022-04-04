@@ -1,10 +1,18 @@
 using LinearAlgebra
+using Printf
 
 
+function primal_dual(n, m, e, iden, c, b, A, x, y, s, σ, μ, α, max_iter, ε, 𝑶, 𝑶2, 𝑶3)
 
-function primal_dual(n, m, e, iden, c, b, A, x, y, s, σ, μ, α, max_iter, ϵ, 𝑶, 𝑶2, 𝑶3)
+    print("Primal-Dual Interior Point method\n")
 
-    for i=1:1:max_iter
+    print("n = $(n), m = $(m)\n")
+
+    print("iter\t\ttime\t\tf(x)-ϕ(y)\t\t∥Ax-b∥\t\t∥Ay+s-c∥\t\t∥g∥\n\n")
+
+    for iteration=1:1:max_iter
+
+        start = time()
 
         X = diagm(vec(x))
 
@@ -17,8 +25,6 @@ function primal_dual(n, m, e, iden, c, b, A, x, y, s, σ, μ, α, max_iter, ϵ, 
 
         Δ = 𝑮 \ 𝒚
 
-        print(size(Δ))
-
         Δx, Δy, Δs = Δ[1:n], Δ[n+1:n+m], Δ[n+m+1:2*n+m]
 
         # Update variables
@@ -29,16 +35,31 @@ function primal_dual(n, m, e, iden, c, b, A, x, y, s, σ, μ, α, max_iter, ϵ, 
         y = y + α*Δy
 
         # Compute gaps
-        gap1 = c' * x - b' * y 
+        gap = c' * x - b' * y 
 
-        gap2 = x' * s 
+        least_squares = norm(A * x - b)
 
-        display(gap2)
+        s_norm = norm(A' * y + s - c)
 
+        g_norm = norm(Δ)
+
+        finish = time()
+
+        time_step = finish - start
+
+        @printf "%d\t\t%.8f \t%1.5e \t%1.5e \t%1.5e \t%1.5e \n" iteration time_step gap[1] least_squares s_norm g_norm
+
+        # Check stopping condition
+        if max(gap[1], s_norm, least_squares) ≤ ε
+            print("Stopping conditions satisfied!")
+            break
+        end
 
         # Update barrier
         μ = σ * μ
 
     end
+
+    print("\n\n")
 
 end
