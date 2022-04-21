@@ -2,13 +2,13 @@ using LinearAlgebra
 using Printf
 
 
-function primal_dual(n, m, e, iden, c, b, A, x, y, s, σ, μ, α, max_iter, ε, 𝑶, 𝑶2, 𝑶3)
+function primal_dual(n, m, e, iden, c, b, A, x, y, s, r, μ, α, max_iter, ε, 𝑶, 𝑶2, 𝑶3)
 
     print("Primal-Dual Interior Point method\n")
 
     print("n = $(n), m = $(m)\n")
 
-    print("iter\t\ttime\t\tf(x)-ϕ(y)\t\t∥Ax-b∥\t\t∥Ay+s-c∥\t\t∥g∥\n\n")
+    print("iter\t\ttime\t\tf(x)-ϕ(y)\t∥Ax-b∥\t\t∥Ay+s-c∥\t\t∥g∥\n\n")
 
     for iteration=1:1:max_iter
 
@@ -17,6 +17,9 @@ function primal_dual(n, m, e, iden, c, b, A, x, y, s, σ, μ, α, max_iter, ε, 
         X = diagm(vec(x))
 
         S = diagm(vec(s))
+
+        # Shrink μ
+        μ = (1/10) * (dot(x, s) / iteration)
 
         # Build matrix to find the Newton directions
         𝑮 = [A 𝑶 𝑶2; 𝑶3 A' iden; S 𝑶2' X]
@@ -54,9 +57,6 @@ function primal_dual(n, m, e, iden, c, b, A, x, y, s, σ, μ, α, max_iter, ε, 
             print("Stopping conditions satisfied!")
             break
         end
-
-        # Update barrier
-        μ = σ * μ
 
     end
 

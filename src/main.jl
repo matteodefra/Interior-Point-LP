@@ -31,10 +31,10 @@ for (n, m) in zip(ns, ms)
 
     # print(x)
 
-    σ = 0.5
+    r = 0.5
 
     μ = 1/n * dot(x, s)
-
+    
     α = 0.9995
 
     max_iter = 500
@@ -49,8 +49,8 @@ for (n, m) in zip(ns, ms)
 
     𝑶3 = zeros((n,n))
 
-    primal_dual(n, m, e, iden, c, b, A, x, y, s, σ, μ, α, max_iter, ε, 𝑶, 𝑶2, 𝑶3)
+    primal_dual(n, m, e, iden, c, b, A, x, y, s, r, μ, α, max_iter, ε, 𝑶, 𝑶2, 𝑶3)
 
-    # barrier(n, m, e, c, b, A, x, σ, μ, α, max_iter, ε, 𝑶, 𝒐)
+    # central_path(n, m, e, c, b, A, x, r, μ, α, max_iter, ε, 𝑶, 𝒐)
 
 end

@@ -2,11 +2,11 @@ using LinearAlgebra
 using Printf
 
 
-function barrier(n, m, e, c, b, A, x, σ, μ, α, max_iter, ε, 𝑶, 𝒐)
+function central_path(n, m, e, c, b, A, x, σ, μ, α, max_iter, ε, 𝑶, 𝒐)
 
-    print("Newton Method with Logarithmic Barrier method")
+    print("Newton Method with Logarithmic Barrier central path method\n")
 
-    print("n = $(n), m = $(m)")
+    print("n = $(n), m = $(m)\n")
 
     print("iter\t\ttime\t\tf(x)-ϕ(y)\t\t∥Ax-b∥\t\t∥Ay+s-c∥\t\t∥g∥\n\n")
 
