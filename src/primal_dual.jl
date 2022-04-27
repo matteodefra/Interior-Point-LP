@@ -8,7 +8,7 @@ function primal_dual(n, m, e, iden, c, b, A, x, y, s, r, μ, α, max_iter, ε, �
 
     print("n = $(n), m = $(m)\n")
 
-    print("iter\t\ttime\t\tf(x)-ϕ(y)\t∥Ax-b∥\t\t∥Ay+s-c∥\t\t∥g∥\n\n")
+    print("iter\t\ttime\t\ts⋅x\t\t∥Ax-b∥\t\t∥Ay+s-c∥\t\t∥g∥\n\n")
 
     for iteration=1:1:max_iter
 
@@ -19,7 +19,7 @@ function primal_dual(n, m, e, iden, c, b, A, x, y, s, r, μ, α, max_iter, ε, �
         S = diagm(vec(s))
 
         # Shrink μ
-        μ = (1/10) * (dot(x, s) / iteration)
+        μ = α * (dot(x, s) / iteration)
 
         # Build matrix to find the Newton directions
         𝑮 = [A 𝑶 𝑶2; 𝑶3 A' iden; S 𝑶2' X]
@@ -38,11 +38,11 @@ function primal_dual(n, m, e, iden, c, b, A, x, y, s, r, μ, α, max_iter, ε, �
         y = y + α*Δy
 
         # Compute gaps
-        gap = c' * x - b' * y 
-
         least_squares = norm(A * x - b)
 
         s_norm = norm(A' * y + s - c)
+
+        complementary_slackness = (s' * x)[1]
 
         g_norm = norm(Δ)
 
@@ -50,10 +50,10 @@ function primal_dual(n, m, e, iden, c, b, A, x, y, s, r, μ, α, max_iter, ε, �
 
         time_step = finish - start
 
-        @printf "%d\t\t%.8f \t%1.5e \t%1.5e \t%1.5e \t%1.5e \n" iteration time_step gap[1] least_squares s_norm g_norm
+        @printf "%d\t\t%.8f \t%1.5e \t%1.5e \t%1.5e \t%1.5e \n" iteration time_step complementary_slackness least_squares s_norm g_norm
 
         # Check stopping condition
-        if max(gap[1], s_norm, least_squares) ≤ ε
+        if max(complementary_slackness, s_norm, least_squares) ≤ ε
             print("Stopping conditions satisfied!")
             break
         end
